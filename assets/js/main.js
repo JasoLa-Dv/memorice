@@ -36,7 +36,7 @@ let parrafoIntentos = document.getElementById('jugadas')
 let figuras = []
 let intentos = 0
 let idPrimeraTarjeta = null
-let cantidadesDeTarjetas = 0
+let cantidadDeTarjetas = 0
 let tarjetasCorrectas = 0
 
 //  Función que retorna la dificultad seleccionada por el jugador
@@ -59,6 +59,61 @@ function obtenerTarjetasPorDificultad(dificultad){
     }
 
     tarjetasElegidas = [...tarjetasElegidas, ...tarjetasElegidas].sort(()=>Math.random()-0.5)
-    cantidadesDeTarjetas = tarjetasElegidas.length
+    cantidadDeTarjetas = tarjetasElegidas.length
     return tarjetasElegidas
+}
+
+// Ocultar el select y botón reiniciar (se ejecuta cuando se hace click en Comenzar Partida)
+function ocultarDificultad(){
+    selectDificultad.style.display = 'none'
+    botonComenzar.style.display = 'none'
+    botonReiniciar.style.display = 'block'
+    parrafoIntentos.style.display = 'block'
+    botonReiniciar.addEventListener('click', reiniciarJuego)
+}
+
+
+function reiniciarJuego(){
+    selectDificultad.style.display = 'block'
+    botonComenzar.style.display = 'block'
+    botonReiniciar.style.display = 'none'
+    parrafoIntentos.style.display = 'none'
+    document.getElementById('intentos').innerText = 0
+    contenedor.innerHTML = ''
+    figuras = []
+    intentos = 0
+    idPrimeraTarjeta = null
+    cantidadDeTarjetas = 0
+    tarjetasCorrectas = 0
+
+}
+
+// Función que agrega al DOM un div por cada tarjeta
+function dibujarTarjetas(){
+contenedor.innerHTML = ''
+
+figuras.forEach((tarjetas, index)=>{
+    contenedor.innerHTML +=`
+    <div class="card" id="${index}">
+    <img
+    src="./assets/imagen/${tarjeta}.png"
+    width="70"
+    />
+    </div>`
+
+})
+
+setTimeout(()=>{
+    agregarListenerYOcultar()
+}, 3000)
+
+}
+
+// Función ejecutada al hacer click en botón "Comenzar Juego"
+function comenzarJuego(){
+    const dificultad = obtenerDificultad()
+    figuras = obtenerTarjetasPorDificultad(dificultad)
+    dibujarTarjetas()
+    ocultarDificultad()
+
 }
