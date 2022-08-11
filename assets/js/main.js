@@ -96,7 +96,7 @@ figuras.forEach((tarjetas, index)=>{
     contenedor.innerHTML +=`
     <div class="card" id="${index}">
     <img
-    src="./assets/imagen/${tarjeta}.png"
+    src="./assets/images/${tarjeta}.png"
     width="70"
     />
     </div>`
@@ -115,5 +115,64 @@ function comenzarJuego(){
     figuras = obtenerTarjetasPorDificultad(dificultad)
     dibujarTarjetas()
     ocultarDificultad()
+
+}
+
+// Función que maneja la lógica de verificación de pares al voltear tarjetas
+function girarTarjeta(id){
+    //1. Se muestra la imagen de la tarjeta
+    let imagen = Array.from(document.getElementById(id).children)[0]
+    imagen.src = `./assets/images/${figuras[id]}.png`
+
+    //2. Se verifica si la tarjeta volteada correponde a la primera o a la segunda del par
+    if(idPrimeraTarjeta===null){
+        idPrimeraTarjeta = id
+    }else{
+        let tarjeta1 = document.getElementById(idPrimeraTarjeta)
+        let tarjeta2 = document.getElementById(id)
+
+        if(figuras[idPrimeraTarjeta] === figuras[id]){
+            tarjetasCorrectas += 2
+            tarjeta1.style.boxShadow = '4px 4px 3px green'
+            tarjeta2.style.boxShadow = '4px 4px 3px green'
+        }else{
+            tarjeta1.style.boxShadow = '4px 4px 3px red'
+            tarjeta2.style.boxShadow = '4px 4px 3px red'
+            let imagen1 = Array.from(tarjeta1.children)[0]
+            let imagen2 = Array.from(tarjeta1.children)[0]
+
+            setTimeout(()=>{
+                imagen1.src = './assets/images/question.png'
+                imagen2.src = './assets/images/question.png'
+                tarjeta1.style.boxShadow = '4px 4px 3px (0, 0, 0, 0.4)'
+                tarjeta2.style.boxShadow = '4px 4px 3px (0, 0, 0, 0.4)'
+            }, 1000)
+        }
+
+        intentos+=1
+        document.getElementById('intentos').innerText = intentos
+        idPrimeraTarjeta = null
+
+    // 3. Verificación si el juego continua o termina
+    if(cantidadDeTarjetas===tarjetasCorrectas){
+        let mensaje = document.getElementById('mesaje')
+        mensaje.style.display = 'flex'
+        
+        //mensaje.classList.add('mensaje')
+        mensaje.innerHTML=`
+        <div>
+        <h1>Felicitaciones!!</h1>
+        <p>Has ganado la partida con ${intentos} intentos de un total de ${figuras.length / 2}</p>
+        <button id="cerrar">Volver a jugar</button>
+        </div>`
+
+        document.getElementById('cerrar').addEventListener('click', ()=>{
+            mensaje.style.display = 'none'
+        })
+
+        reiniciarJuego()
+
+        }
+    }
 
 }
